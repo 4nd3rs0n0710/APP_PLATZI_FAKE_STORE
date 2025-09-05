@@ -1,49 +1,203 @@
 {% extends "base.html" %}
 
-{% block title %}Detalle de {{ product.title }}{% endblock %}
+{% block title %}{{ product.title }} - Mi Tienda{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Imagen del producto -->
-        <div>
-            <img src="{{ product.images.0 }}" alt="{{ product.title }}"
-                 class="w-full h-72 object-cover rounded-xl shadow-md">
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <!-- Migas de pan -->
+  <nav class="flex mb-6" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+      <li class="inline-flex items-center">
+        <a href="{% url 'product_list' %}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600">
+          🏠 Inicio
+        </a>
+      </li>
+      <li>
+        <div class="flex items-center">
+          <svg class="w-4 h-4 text-gray-400 mx-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+          <a href="#" class="ml-1 text-sm font-medium text-gray-500 hover:text-indigo-600 md:ml-2">{{ product.category.name }}</a>
         </div>
+      </li>
+      <li aria-current="page">
+        <div class="flex items-center">
+          <svg class="w-4 h-4 text-gray-400 mx-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+          <span class="ml-1 text-sm font-medium text-gray-400 md:ml-2">{{ product.title|truncatewords:3 }}</span>
+        </div>
+      </li>
+    </ol>
+  </nav>
 
-        <!-- Información del producto -->
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800 mb-3">{{ product.title }}</h1>
-            <p class="text-gray-600 mb-2">
-                <span class="font-semibold">Categoría:</span> {{ product.category.name }}
-            </p>
-            <p class="text-gray-700 mb-4 leading-relaxed">
-                {{ product.description }}
-            </p>
-            <p class="text-indigo-600 font-extrabold text-2xl mb-6">
-                ${{ product.price }}
-            </p>
+  <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-xl overflow-hidden border border-gray-700">
+    <!-- Galería de imágenes -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+      <div class="space-y-4">
+        <!-- Imagen principal -->
+        <div class="relative overflow-hidden rounded-xl bg-gray-700 aspect-square">
+          <img id="mainImage" src="{{ product.images.0 }}" alt="{{ product.title }}" 
+               class="w-full h-80 object-cover rounded-xl transition duration-300 hover:scale-105">
+          
+          <!-- Badge de descuento -->
+          <span class="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+            -15%
+          </span>
+          
+          <!-- Botón de favoritos -->
+          <button class="absolute top-4 right-4 bg-gray-800/80 backdrop-blur-sm rounded-full p-2 text-gray-300 hover:text-red-500 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Miniaturas -->
+        <div class="grid grid-cols-4 gap-3">
+          {% for image in product.images %}
+          <div class="cursor-pointer border-2 border-transparent hover:border-indigo-400 rounded-lg transition p-1">
+            <img src="{{ image }}" alt="Miniatura {{ forloop.counter }}" 
+                 class="w-full h-16 object-cover rounded-md"
+                 onclick="document.getElementById('mainImage').src = '{{ image }}'">
+          </div>
+          {% endfor %}
+        </div>
+      </div>
 
-            <!-- Botones de acción -->
-            <div class="flex gap-4">
-                <a href="{% url 'edit_product' product.id %}" 
-                   class="px-5 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-xl shadow-md hover:scale-105 transition">
-                    ✏ Editar
-                </a>
-                <form action="{% url 'delete_product' product.id %}" method="post"
-                      onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">
-                    {% csrf_token %}
-                    <button type="submit" 
-                            class="px-5 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl shadow-md hover:scale-105 transition">
-                        🗑 Eliminar
-                    </button>
-                </form>
-                <a href="{% url 'product_list' %}" 
-                   class="px-5 py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-xl shadow-md hover:scale-105 transition">
-                    🔙 Volver
-                </a>
+      <!-- Información del producto -->
+      <div class="py-2">
+        <!-- Categoría y rating -->
+        <div class="flex justify-between items-center mb-4">
+          <span class="px-3 py-1 bg-indigo-900/40 text-indigo-300 text-xs font-medium rounded-full">
+            {{ product.category.name }}
+          </span>
+          
+          <div class="flex items-center">
+            <div class="flex text-amber-400">
+              {% for i in "12345" %}
+                {% if forloop.counter <= 4 %}
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                {% endif %}
+              {% endfor %}
             </div>
+            <span class="ml-1 text-sm text-gray-400">(42)</span>
+          </div>
         </div>
+
+        <h1 class="text-3xl font-bold text-white mb-2">{{ product.title }}</h1>
+        
+        <p class="text-gray-300 mb-6 leading-relaxed">
+          {{ product.description }}
+        </p>
+
+        <!-- Precios -->
+        <div class="flex items-center mb-6">
+          <span class="text-3xl font-extrabold text-indigo-400">${{ product.price }}</span>
+          <span class="ml-3 text-lg text-gray-400 line-through">${{ product.price|add:25 }}</span>
+          <span class="ml-3 px-2 py-1 bg-red-500/20 text-red-400 text-xs font-bold rounded">Ahorra 15%</span>
+        </div>
+
+        <!-- Selector de cantidad -->
+        <div class="mb-6">
+          <label class="block text-gray-300 mb-2 font-medium">Cantidad</label>
+          <div class="flex items-center">
+            <button class="bg-gray-700 text-white w-10 h-10 rounded-l-lg" onclick="decreaseQuantity()">-</button>
+            <input type="number" id="quantity" value="1" min="1" 
+                   class="w-16 h-10 text-center bg-gray-800 text-white border-t border-b border-gray-700">
+            <button class="bg-gray-700 text-white w-10 h-10 rounded-r-lg" onclick="increaseQuantity()">+</button>
+            <span class="ml-4 text-sm text-gray-400">Disponible: 12 unidades</span>
+          </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <button class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+            🛒 Añadir al carrito
+          </button>
+          
+          <button class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+            ⚡ Comprar ahora
+          </button>
+        </div>
+
+        <!-- Acciones de administrador -->
+        <div class="border-t border-gray-700 pt-6">
+          <h3 class="text-lg font-semibold text-gray-300 mb-3">Acciones de administrador</h3>
+          <div class="flex flex-wrap gap-3">
+            <a href="{% url 'edit_product' product.id %}" 
+               class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all">
+              ✏️ Editar
+            </a>
+            
+            <form action="{% url 'delete_product' product.id %}" method="post"
+                  onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.');">
+              {% csrf_token %}
+              <button type="submit" 
+                      class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all">
+                🗑️ Eliminar
+              </button>
+            </form>
+            
+            <a href="{% url 'product_list' %}" 
+               class="px-4 py-2 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-400 hover:to-gray-500 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all">
+              ⬅️ Volver
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Información adicional -->
+    <div class="bg-gray-800/50 border-t border-gray-700 p-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-12 h-12 bg-indigo-500/20 rounded-full mb-3">✔️</div>
+          <h3 class="text-lg font-semibold text-white mb-2">Envío gratis</h3>
+          <p class="text-gray-400 text-sm">En compras superiores a $50. Entrega en 2-5 días.</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-12 h-12 bg-green-500/20 rounded-full mb-3">🔄</div>
+          <h3 class="text-lg font-semibold text-white mb-2">Devoluciones</h3>
+          <p class="text-gray-400 text-sm">30 días para devoluciones. Fácil y sin complicaciones.</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-12 h-12 bg-amber-500/20 rounded-full mb-3">💬</div>
+          <h3 class="text-lg font-semibold text-white mb-2">Soporte 24/7</h3>
+          <p class="text-gray-400 text-sm">Asistencia continua para resolver tus dudas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+function increaseQuantity() {
+  const quantityInput = document.getElementById('quantity');
+  quantityInput.value = parseInt(quantityInput.value) + 1;
+}
+
+function decreaseQuantity() {
+  const quantityInput = document.getElementById('quantity');
+  if (parseInt(quantityInput.value) > 1) {
+    quantityInput.value = parseInt(quantityInput.value) - 1;
+  }
+}
+
+document.querySelectorAll('.grid-cols-4 img').forEach(img => {
+  img.addEventListener('click', function() {
+    document.getElementById('mainImage').src = this.src;
+    document.querySelectorAll('.grid-cols-4 > div').forEach(div => {
+      div.classList.remove('border-indigo-400');
+      div.classList.add('border-transparent');
+    });
+    this.parentElement.classList.add('border-indigo-400');
+    this.parentElement.classList.remove('border-transparent');
+  });
+});
+</script>
 {% endblock %}

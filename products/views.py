@@ -121,3 +121,5 @@ def delete_product(request, product_id):
             return HttpResponse("❌ Error al eliminar producto", status=response.status_code)
     except requests.exceptions.RequestException:
         return HttpResponse("❌ No se pudo conectar con la API", status=500)
+
+
