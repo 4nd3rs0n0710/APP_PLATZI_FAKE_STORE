@@ -21,7 +21,7 @@
 
         <!-- Menú -->
         <div class="hidden md:flex items-center space-x-6">
-          <a href="{% url 'product_list' %}" class="text-gray-300 hover:text-purple-400">Productos</a>
+          <a href="{% url 'products:product_list' %}" class="text-gray-300 hover:text-purple-400">Productos</a>
           <a href="#" class="text-gray-300 hover:text-purple-400">Categorías</a>
           <a href="#" class="text-gray-300 hover:text-purple-400">Ofertas</a>
           <a href="#" class="text-gray-300 hover:text-purple-400">Reportes</a>
@@ -60,7 +60,7 @@
     <!-- 🔹 Encabezado -->
     <div class="flex flex-col md:flex-row justify-between items-center mb-8">
       <h1 class="text-3xl font-bold text-purple-400">Gestión de Productos</h1>
-      <a href="{% url 'create_product' %}" 
+      <a href="{% url 'products:product_create' %}" 
         class="mt-4 md:mt-0 inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg shadow text-white text-sm font-medium">
         ➕ Crear Producto
       </a>
@@ -99,10 +99,10 @@
     <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {% for product in products %}
       <div class="product-card bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-[1.02] transition-transform duration-200"
-           data-title="{{ product.title|lower }}" 
-           data-category="{{ product.category.name }}" 
-           data-price="{{ product.price }}" 
-           data-popular="true" data-new="false" data-offer="true">
+            data-title="{{ product.title|lower }}" 
+            data-category="{{ product.category.name }}" 
+            data-price="{{ product.price }}" 
+            data-popular="true" data-new="false" data-offer="true">
         
         <img src="{{ product.images.0 }}" alt="{{ product.title }}" class="h-40 w-full object-cover">
         
@@ -113,9 +113,9 @@
 
           <!-- Botones -->
           <div class="mt-4 flex justify-between gap-2">
-            <a href="{% url 'product_detail' product.id %}" class="flex-1 text-center px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-sm">Ver</a>
-            <a href="{% url 'edit_product' product.id %}" class="flex-1 text-center px-3 py-1 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-white text-sm">Editar</a>
-            <a href="{% url 'delete_product' product.id %}" class="flex-1 text-center px-3 py-1 bg-red-600 hover:bg-red-700 rounded-lg text-white text-sm">Eliminar</a>
+            <a href="{% url 'products:product_detail' product.id %}" class="flex-1 text-center px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-sm">Ver</a>
+            <a href="{% url 'products:edit_product' product.id %}" class="flex-1 text-center px-3 py-1 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-white text-sm">Editar</a>
+            <a href="{% url 'products:delete_product' product.id %}" class="flex-1 text-center px-3 py-1 bg-red-600 hover:bg-red-700 rounded-lg text-white text-sm">Eliminar</a>
           </div>
         </div>
       </div>
