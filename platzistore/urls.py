@@ -1,28 +1,25 @@
-"""
-URL configuration for platzistore project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+# Configuración de URLs del Proyecto (plattistore/urls.py)
 from django.contrib import admin
 from django.urls import path, include
-from products import views
+
+# No necesitamos importar vistas específicas aquí si usamos `include`
+# from accounts.views import register_view, login_view 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('products.urls')),
-    path('', include('accounts.urls')),
     
+    # 1. URLs de la aplicación 'products'
+    path('', include('products.urls')),
+    
+    # 2. URLs de la aplicación 'accounts'
+    # Esto incluye tus vistas personalizadas (como /register/ y /login/)
+    # ya que tu comentario anterior indica: path('', include('accounts.urls'))
+    path('', include('accounts.urls')), 
+    
+    # 3. MÓDULO DE RESTABLECIMIENTO DE CONTRASEÑA DE DJANGO AUTH
+    # Incluimos `django.contrib.auth.urls` BAJO el namespace 'accounts'.
+    # Esto es VITAL para que los patrones de password reset (como password_reset_confirm)
+    # se llamen correctamente desde la plantilla de correo como 'accounts:password_reset_confirm'.
+    # Usamos el prefijo 'accounts/' para todas estas URLs por convención.
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
-
-

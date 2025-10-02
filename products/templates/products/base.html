@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Catálogo - Mi Tienda Pro{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Definimos un gradiente de fondo más profundo y oscuro */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); /* slate-900 a slate-800 */
+        }
+        /* Estilo para tarjetas de producto más profesionales */
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* Le damos un borde de color para resaltar */
+            border: 1px solid rgba(139, 92, 246, 0.2); /* Borde suave violeta */
+            background-color: #1e293b; /* Fondo oscuro (slate-800) */
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            /* Sombra más marcada con glow del color principal */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(139, 92, 246, 0.5); 
+        }
+        /* Color principal para links y botones, usando violeta (similar a tu purple/indigo) */
+        .primary-color {
+            color: #a78bfa; /* violet-400 */
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen flex flex-col">
+
+    <header class="bg-slate-900/95 backdrop-blur-md shadow-xl sticky top-0 z-50 border-b border-violet-900/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center mb-3 md:mb-0">
+                <a href="{% url 'products:product_list' %}" class="text-3xl font-extrabold primary-color flex items-center tracking-wider">
+                    <i class="fas fa-store mr-3"></i> Mi Tienda <span class="text-xs ml-1 text-red-500">PRO</span>
+                </a>
+            </div>
+
+            <nav class="flex flex-wrap gap-6 items-center text-sm font-medium">
+                
+                <a href="{% url 'products:product_list' %}" class="hover:primary-color transition flex items-center text-gray-300 hover:text-violet-400">
+                    <i class="fas fa-cube mr-1"></i> Catálogo
+                </a>
+                
+                {% if user.is_authenticated %}
+                <a href="{% url 'products:product_create' %}" class="hover:primary-color transition flex items-center text-gray-300 hover:text-violet-400">
+                    <i class="fas fa-plus-square mr-1"></i> Publicar
+                </a>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    <div class="dropdown relative ml-2">
+                        <button class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-full transition flex items-center shadow-lg shadow-violet-800/50">
+                            <i class="fas fa-user-circle mr-2 text-lg"></i> 
+                            {{ user.username }} 
+                            <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                        </button>
+                        <div class="dropdown-menu absolute hidden right-0 mt-3 w-48 bg-slate-800 rounded-lg shadow-2xl py-2 z-50 border border-violet-700/50">
+                            <a href="#" class="block px-4 py-2 text-gray-300 hover:bg-slate-700 transition">
+                                <i class="fas fa-user mr-2"></i> Mi Perfil
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-gray-300 hover:bg-slate-700 transition">
+                                <i class="fas fa-shopping-cart mr-2"></i> Mis Compras
+                            </a>
+                            <div class="border-t border-slate-700 my-1"></div>
+                            <a href="{% url 'accounts:logout' %}" class="block px-4 py-2 text-red-400 hover:bg-slate-700 transition">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Cerrar sesión
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="flex gap-3">
+                        <a href="{% url 'accounts:login' %}" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg transition flex items-center font-semibold">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Acceder
+                        </a>
+                        <a href="{% url 'accounts:register' %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition flex items-center font-semibold">
+                            <i class="fas fa-user-plus mr-2"></i> Registrarse
+                        </a>
+                    </div>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 w-full">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} p-4 mb-4 rounded-lg shadow-md {% if message.tags == 'success' %}bg-emerald-900 text-emerald-200 border border-emerald-700{% elif message.tags == 'error' %}bg-red-900 text-red-200 border border-red-700{% else %}bg-blue-900 text-blue-200 border border-blue-700{% endif %}">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    {% if message.tags == 'success' %}
+                    <i class="fas fa-check-circle mr-3"></i>
+                    {% elif message.tags == 'error' %}
+                    <i class="fas fa-exclamation-circle mr-3"></i>
+                    {% else %}
+                    <i class="fas fa-info-circle mr-3"></i>
+                    {% endif %}
+                    <span>{{ message }}</span>
+                </div>
+                <button type="button" class="close-alert opacity-70 hover:opacity-100">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="max-w-7xl mx-auto py-10 px-4 sm:px-6 flex-grow w-full">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-slate-900 py-8 text-center text-gray-400 mt-16 border-t border-violet-900/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">Mi Tienda PRO</h3>
+                    <p class="text-sm">Innovación y calidad en cada producto que eliges.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Ayuda</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-violet-400 transition">Soporte 24/7</a></li>
+                        <li><a href="#" class="hover:text-violet-400 transition">Devoluciones</a></li>
+                        <li><a href="#" class="hover:text-violet-400 transition">Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Síguenos</h3>
+                    <div class="flex justify-center space-x-6 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-violet-400 transition text-xl"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-violet-400 transition text-xl"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-violet-400 transition text-xl"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-6 mt-6 text-sm">
+                <p>Hecho con 🔥 y Django + Tailwind | © 2025 Mi Tienda PRO</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cerrar mensajes de alerta
+            document.querySelectorAll('.close-alert').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.closest('.alert').style.display = 'none';
+                });
+            });
+            
+            // Dropdown menu para el perfil de usuario (Manejo de Click)
+            const dropdownButton = document.querySelector('.dropdown button');
+            if (dropdownButton) {
+                dropdownButton.addEventListener('click', function(e) {
+                    e.stopPropagation(); 
+                    const menu = this.nextElementSibling;
+                    menu.classList.toggle('hidden');
+                });
+            }
+            
+            // Cerrar dropdown al hacer clic fuera (si está abierto)
+            document.addEventListener('click', function(event) {
+                const dropdowns = document.querySelectorAll('.dropdown');
+                dropdowns.forEach(dropdown => {
+                    if (!dropdown.contains(event.target)) {
+                        dropdown.querySelector('.dropdown-menu').classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

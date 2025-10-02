@@ -1,268 +1,162 @@
-{% extends 'base.html' %}
+{% extends 'products/base.html' %} 
+
 {% load static %}
 
-{% block title %}Iniciar Sesión - Django Shop{% endblock %}
+{% block title %}Acceder - Mi Tienda PRO{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="auth-card">
-            <div class="auth-card-body">
-        <div class="text-center mb-4">
-            <div class="auth-icon">
-            <i class="fas fa-sign-in-alt fa-3x text-primary"></i>
-        </div>
-            <h2 class="auth-title">Iniciar Sesión</h2>
-            <p class="auth-subtitle">Accede a tu cuenta para continuar</p>
-        </div>
-        
-        <!-- Mostrar mensajes de error o éxito -->
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            {% endfor %}
-        {% endif %}
 
-        <form method="post" novalidate class="auth-form">
-            {% csrf_token %}
+<div class="flex justify-center items-center py-10">
+    <div class="w-full max-w-sm md:max-w-md">
 
-        <!-- Campo Username -->
-        <div class="mb-3">
-        <label for="{{ form.username.id_for_label }}" class="form-label">
-            <i class="fas fa-user text-primary"></i> {{ form.username.label }}
-        </label>
-            <div class="input-group">
-                <span class="input-group-text bg-primary text-white">
-                    <i class="fas fa-user"></i>
-                </span>
-                {{ form.username }}
-            </div>
-            {% if form.username.errors %}
-                <div class="text-danger small mt-1">
-                    {% for error in form.username.errors %}
-                    <div><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                    {% endfor %}
+        <div class="bg-slate-800/80 backdrop-blur-sm border border-violet-900/50 rounded-2xl shadow-2xl shadow-violet-900/50 overflow-hidden transition duration-500 hover:shadow-violet-800/70">
+            
+            <div class="bg-slate-900/70 p-6 border-b border-violet-900/50 text-center">
+                <div class="text-violet-400 mb-2">
+                    <i class="fas fa-fingerprint text-4xl"></i>
                 </div>
-            {% endif %}
-        </div>
-
-        <!-- Campo Password -->
-        <div class="mb-3">
-            <label for="{{ form.password.id_for_label }}" class="form-label">
-                <i class="fas fa-lock text-primary"></i> {{ form.password.label }}
-            </label>
-            <div class="input-group">
-                <span class="input-group-text bg-primary text-white">
-                <i class="fas fa-lock"></i>
-                </span>
-            {{ form.password }}
-            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                <i class="fas fa-eye" id="eyeIcon"></i>
-            </button>
-            </div>
-            {% if form.password.errors %}
-            <div class="text-danger small mt-1">
-                {% for error in form.password.errors %}
-                    <div><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- Errores generales del formulario -->
-        {% if form.non_field_errors %}
-            <div class="alert alert-danger">
-            {% for error in form.non_field_errors %}
-                <i class="fas fa-exclamation-triangle"></i> {{ error }}
-            {% endfor %}
-            </div>
-        {% endif %}
-
-        <!-- Checkbox "Recordarme" -->
-        <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="rememberMe">
-            <label class="form-check-label" for="rememberMe">
-                Recordarme por 30 días
-            </label>
-        </div>
-
-        <!-- Botón de login -->
-        <div class="d-grid gap-2 mb-3">
-            <button type="submit" class="btn btn-primary btn-lg auth-submit-btn">
-                <i class="fas fa-sign-in-alt"></i> Ingresar
-            </button>
-        </div>
-
-        <!-- Enlaces adicionales -->
-        <div class="text-center">
-            <div class="mb-3">
-                <a href="#" class="text-decoration-none text-muted hover-primary">
-                <i class="fas fa-key"></i> ¿Olvidaste tu contraseña?
-                </a>
+                <h2 class="text-3xl font-bold text-white mb-1">Bienvenido de Vuelta</h2>
+                <p class="text-slate-400 text-sm">Ingresa tus credenciales para acceder</p>
             </div>
             
-            <hr class="my-3">
-            
-            <div class="auth-switch">
-                <p class="mb-2 text-muted">¿No tienes una cuenta?</p>
-                <a href="{% url 'accounts:register' %}" class="btn btn-outline-primary">
-                <i class="fas fa-user-plus"></i> Crear cuenta nueva
-            </a>
+            <div class="p-8">
+                
+                {% if messages %}
+                    <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="p-4 rounded-lg shadow-md mb-2 
+                             {% if message.tags == 'success' %}bg-emerald-900 text-emerald-200 border border-emerald-700
+                             {% elif message.tags == 'error' %}bg-red-900 text-red-200 border border-red-700
+                             {% else %}bg-blue-900 text-blue-200 border border-blue-700{% endif %}">
+                            <div class="flex items-center">
+                                <i class="fas fa-info-circle mr-3"></i>
+                                <span>{{ message }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="p-3 mb-4 rounded-lg bg-red-900 text-red-200 border border-red-700">
+                            {% for error in form.non_field_errors %}
+                                <div><i class="fas fa-exclamation-triangle mr-2"></i> {{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-5">
+                        <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-user mr-2 text-violet-400"></i> {{ form.username.label }}
+                        </label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-slate-700 bg-violet-700 text-white">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <input 
+                                type="text" 
+                                name="{{ form.username.name }}" 
+                                id="{{ form.username.id_for_label }}"
+                                placeholder="Ingresa tu nombre de usuario"
+                                class="w-full px-4 py-3 rounded-r-lg bg-slate-700 border border-slate-700 text-white placeholder-slate-500 focus:ring-violet-500 focus:border-violet-500 transition duration-150" 
+                                required
+                                {% if form.username.value %}value="{{ form.username.value }}"{% endif %}
+                            >
+                        </div>
+                        {% if form.username.errors %}
+                            <div class="text-red-400 text-xs mt-1">
+                                {% for error in form.username.errors %}
+                                <div><i class="fas fa-exclamation-circle mr-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-5">
+                        <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-lock mr-2 text-violet-400"></i> {{ form.password.label }}
+                        </label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-slate-700 bg-violet-700 text-white">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input 
+                                type="password" 
+                                name="{{ form.password.name }}" 
+                                id="{{ form.password.id_for_label }}"
+                                placeholder="Ingresa tu contraseña"
+                                class="w-full px-4 py-3 bg-slate-700 border border-slate-700 text-white placeholder-slate-500 focus:ring-violet-500 focus:border-violet-500 transition duration-150" 
+                                required
+                            >
+                            
+                            <button type="button" id="togglePassword" class="px-4 py-3 bg-slate-700 hover:bg-slate-600 border border-slate-700 rounded-r-lg text-slate-400 transition duration-150">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="text-red-400 text-xs mt-1">
+                                {% for error in form.password.errors %}
+                                <div><i class="fas fa-exclamation-circle mr-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="rememberMe" class="h-4 w-4 text-violet-600 bg-slate-700 border-slate-600 rounded focus:ring-violet-500">
+                            <label for="rememberMe" class="ml-2 block text-sm text-slate-400">
+                                Recordarme
+                            </label>
+                        </div>
+                        <a href="{% url 'accounts:password_reset' %}" class="text-sm text-slate-400 hover:text-violet-400 transition">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-3 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-lg shadow-lg shadow-violet-800/40 transition duration-200 transform hover:scale-[1.01] flex items-center justify-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Ingresar
+                    </button>
+                    
+                    <div class="text-center mt-6 pt-4 border-t border-slate-700/50">
+                        <p class="mb-3 text-slate-400 text-sm">¿No tienes una cuenta?</p>
+                        <a href="{% url 'accounts:register' %}" class="w-full inline-flex items-center justify-center px-4 py-2 border-2 border-violet-600 text-violet-400 hover:bg-violet-900/30 font-semibold rounded-lg transition duration-200">
+                            <i class="fas fa-user-plus mr-2"></i> Crear cuenta nueva
+                        </a>
+                    </div>
+                </form>
+
             </div>
-            </div>
-        </form>
         </div>
-    </div>
+
     </div>
 </div>
 
-<style>
-.auth-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-    overflow: hidden;
-}
-
-.auth-card-body {
-    padding: 3rem 2.5rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    color: #333;
-    margin: 3px;
-    border-radius: 17px;
-}
-
-.auth-icon {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 1rem;
-}
-
-.auth-title {
-    color: #333;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.auth-subtitle {
-    color: #6c757d;
-    font-size: 0.95rem;
-}
-
-.form-control {
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    padding: 12px 15px;
-    transition: all 0.3s ease;
-    border-left: none;
-}
-
-.form-control:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-    transform: translateY(-1px);
-}
-
-.input-group-text {
-    border: 2px solid #e9ecef;
-    border-right: none;
-    border-radius: 10px 0 0 10px;
-}
-
-.input-group .form-control:focus + .btn,
-.input-group .form-control:focus {
-    border-color: #667eea;
-}
-
-.auth-submit-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 12px;
-    padding: 15px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-}
-
-.auth-submit-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-}
-
-.btn-outline-primary {
-    border: 2px solid #667eea;
-    border-radius: 10px;
-    color: #667eea;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-outline-primary:hover {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: transparent;
-    transform: translateY(-1px);
-}
-
-.hover-primary:hover {
-    color: #667eea !important;
-}
-
-.form-check-input:checked {
-    background-color: #667eea;
-    border-color: #667eea;
-}
-
-.alert {
-    border-radius: 10px;
-    border: none;
-}
-
-.auth-switch {
-    padding: 1rem;
-    background: rgba(102, 126, 234, 0.1);
-    border-radius: 15px;
-    margin-top: 1rem;
-}
-
-.btn-outline-secondary {
-    border-radius: 0 10px 10px 0;
-}
-
-@media (max-width: 576px) {
-    .auth-card-body {
-    padding: 2rem 1.5rem;
-    }
-}
-</style>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Toggle password visibility
+    // 💡 Toggle password visibility
     const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.getElementById('{{ form.password.id_for_label }}');
+    const passwordField = document.getElementById('{{ form.password.id_for_label }}'); 
     const eyeIcon = document.getElementById('eyeIcon');
 
     if (togglePassword && passwordField) {
-    togglePassword.addEventListener('click', function() {
-        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordField.setAttribute('type', type);
+        togglePassword.addEventListener('click', function(e) {
+            e.preventDefault(); 
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
 
-        eyeIcon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-    });
-}
+            eyeIcon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        });
+    }
 
-  // Auto-focus first empty field
-    const firstEmptyField = document.querySelector('.form-control:not([value]):not(:disabled)');
-    if (firstEmptyField) {
-    firstEmptyField.focus();
+    // 🎯 Auto-focus first empty field
+    // Usamos el ID de label que está en el formulario para asegurar el focus.
+    const usernameField = document.getElementById('{{ form.username.id_for_label }}');
+    if (usernameField) {
+        usernameField.focus();
     }
 });
 </script>
+
 {% endblock %}

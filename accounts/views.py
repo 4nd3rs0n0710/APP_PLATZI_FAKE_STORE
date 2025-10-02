@@ -296,7 +296,7 @@ def register_view(request):
     else:
         form = UserRegistrationForm()
     
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'accounts/register.html', {'form': form})
 
 
 @csrf_protect
@@ -405,7 +405,7 @@ def login_view(request):
     else:
         form = UserLoginForm()
     
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'accounts/login.html', {'form': form})
 
 
 def logout_view(request):

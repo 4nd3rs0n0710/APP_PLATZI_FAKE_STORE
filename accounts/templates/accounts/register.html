@@ -1,0 +1,399 @@
+{% extends 'products/base.html' %} 
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Crear Cuenta - Mi Tienda PRO{% endblock %}
+
+{% block content %}
+
+<!-- Contenedor principal: Centrado en la pantalla -->
+<div class="flex justify-center items-center py-10 min-h-screen-minus-header">
+    <div class="w-full max-w-sm md:max-w-lg">
+        
+        <!-- Tarjeta de Autenticación (Mismo estilo que Login) -->
+        <div class="bg-slate-800/80 backdrop-blur-sm border border-violet-900/50 rounded-2xl shadow-2xl shadow-violet-900/50 overflow-hidden transition duration-500 hover:shadow-violet-800/70">
+            
+            <!-- Encabezado de la tarjeta -->
+            <div class="bg-slate-900/70 p-6 border-b border-violet-900/50 text-center">
+                <div class="text-violet-400 mb-2">
+                    <!-- Icono para Registro -->
+                    <i class="fas fa-user-plus text-4xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-1">Crea Tu Cuenta PRO</h2>
+                <p class="text-slate-400 text-sm">Únete a la comunidad. Es rápido y sencillo.</p>
+            </div>
+            
+            <div class="p-8">
+                
+                <!-- Mensajes (Success/Error/etc.) -->
+                {% if messages %}
+                    <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="p-4 rounded-lg shadow-md mb-2 
+                             {% if message.tags == 'success' %}bg-emerald-900 text-emerald-200 border border-emerald-700
+                             {% elif message.tags == 'error' %}bg-red-900 text-red-200 border border-red-700
+                             {% else %}bg-blue-900 text-blue-200 border border-blue-700{% endif %}">
+                            <div class="flex items-center">
+                                <i class="fas fa-info-circle mr-3"></i>
+                                <span>{{ message }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'accounts:register' %}" id="registrationForm" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Errores generales del formulario (non-field errors) -->
+                    {% if form.non_field_errors %}
+                        <div class="p-3 mb-4 rounded-lg bg-red-900 text-red-200 border border-red-700">
+                            {% for error in form.non_field_errors %}
+                                <div><i class="fas fa-exclamation-triangle mr-2"></i> {{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- 1. Campo Username -->
+                    <div class="mb-5">
+                        <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-user mr-2 text-violet-400"></i> {{ form.username.label }}
+                        </label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-slate-700 bg-violet-700 text-white">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            {{ form.username|add_class:"w-full px-4 py-3 rounded-r-lg bg-slate-700 border border-slate-700 text-white placeholder-slate-500 focus:ring-violet-500 focus:border-violet-500 transition duration-150"|attr:"placeholder:Define un nombre de usuario"|attr:"required" }}
+                        </div>
+                        {% if form.username.errors %}
+                            <div class="text-red-400 text-xs mt-1">
+                                {% for error in form.username.errors %}
+                                <div><i class="fas fa-exclamation-circle mr-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- 2. Campo Email -->
+                    <div class="mb-5">
+                        <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-envelope mr-2 text-violet-400"></i> {{ form.email.label }}
+                        </label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-slate-700 bg-violet-700 text-white">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            {{ form.email|add_class:"w-full px-4 py-3 rounded-r-lg bg-slate-700 border border-slate-700 text-white placeholder-slate-500 focus:ring-violet-500 focus:border-violet-500 transition duration-150"|attr:"placeholder:correo@ejemplo.com"|attr:"required" }}
+                        </div>
+                        {% if form.email.errors %}
+                            <div class="text-red-400 text-xs mt-1">
+                                {% for error in form.email.errors %}
+                                <div><i class="fas fa-exclamation-circle mr-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- NUEVO: Campo Nombre (first_name) -->
+                    <div class="mb-5">
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-address-card mr-2 text-violet-400"></i> {{ form.first_name.label }}
+                        </label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-slate-700 bg-violet-700 text-white">
+                                <i class="fas fa-address-card"></i>
+                            </span>
+                            {{ form.first_name|add_class:"w-full px-4 py-3 rounded-r-lg bg-slate-700 border border-slate-700 text-white placeholder-slate-500 focus:ring-violet-500 focus:border-violet-500 transition duration-150"|attr:"placeholder:Tu nombre"|attr:"required" }}
+                        </div>
+                        {% if form.first_name.errors %}
+                            <div class="text-red-400 text-xs mt-1">
+                                {% for error in form.first_name.errors %}
+                                <div><i class="fas fa-exclamation-circle mr-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- NUEVO: Campo Apellido (last_name) -->
+                    <div class="mb-5">
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-address-card mr-2 text-violet-400"></i> {{ form.last_name.label }}
+                        </label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-slate-700 bg-violet-700 text-white">
+                                <i class="fas fa-address-card"></i>
+                            </span>
+                            {{ form.last_name|add_class:"w-full px-4 py-3 rounded-r-lg bg-slate-700 border border-slate-700 text-white placeholder-slate-500 focus:ring-violet-500 focus:border-violet-500 transition duration-150"|attr:"placeholder:Tu apellido"|attr:"required" }}
+                        </div>
+                        {% if form.last_name.errors %}
+                            <div class="text-red-400 text-xs mt-1">
+                                {% for error in form.last_name.errors %}
+                                <div><i class="fas fa-exclamation-circle mr-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- 3. Campo Contraseña (password1) -->
+                    <div class="mb-5">
+                        <!-- Usamos el ID estándar de Django "id_password1" -->
+                        <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-lock mr-2 text-violet-400"></i> {{ form.password1.label }}
+                        </label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-slate-700 bg-violet-700 text-white">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <!-- Referencia al campo correcto: form.password1. Forzamos el ID por si acaso no usa el defecto. -->
+                            {{ form.password1|add_class:"w-full px-4 py-3 bg-slate-700 border border-slate-700 border-r-0 rounded-none text-white placeholder-slate-500 focus:ring-violet-500 focus:border-violet-500 transition duration-150"|attr:"placeholder:Crea una contraseña"|attr:"required"|attr:"id:id_password1" }}
+                            
+                            <button type="button" id="togglePassword1" class="px-4 py-3 bg-slate-700 hover:bg-slate-600 border border-slate-700 border-l-0 rounded-l-none rounded-r-lg text-slate-400 transition duration-150">
+                                <i class="fas fa-eye" id="eyeIcon1"></i>
+                            </button>
+                        </div>
+                        <!-- Indicador de fortaleza de contraseña -->
+                        <div class="mt-2">
+                            <div class="h-1 bg-slate-700 rounded-full">
+                                <div id="passwordStrength" class="h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+                            </div>
+                            <small id="passwordHelp" class="text-slate-400 text-xs mt-1 block">Mínimo 8 caracteres.</small>
+                        </div>
+
+                        {% if form.password1.errors %}
+                            <div class="text-red-400 text-xs mt-1">
+                                {% for error in form.password1.errors %}
+                                <div><i class="fas fa-exclamation-circle mr-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- 4. Campo Confirmar Contraseña (password2) -->
+                    <div class="mb-5">
+                        <!-- Usamos el ID estándar de Django "id_password2" -->
+                        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-shield-alt mr-2 text-violet-400"></i> {{ form.password2.label }}
+                        </label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-slate-700 bg-violet-700 text-white">
+                                <i class="fas fa-shield-alt"></i>
+                            </span>
+                            <!-- Referencia al campo correcto: form.password2. Forzamos el ID por si acaso no usa el defecto. -->
+                            {{ form.password2|add_class:"w-full px-4 py-3 bg-slate-700 border border-slate-700 border-r-0 rounded-none text-white placeholder-slate-500 focus:ring-violet-500 focus:border-violet-500 transition duration-150"|attr:"placeholder:Repite la contraseña"|attr:"required"|attr:"id:id_password2" }}
+                            
+                            <button type="button" id="togglePassword2" class="px-4 py-3 bg-slate-700 hover:bg-slate-600 border border-slate-700 border-l-0 rounded-l-none rounded-r-lg text-slate-400 transition duration-150">
+                                <i class="fas fa-eye" id="eyeIcon2"></i>
+                            </button>
+                        </div>
+                        <small id="passwordMatch" class="text-xs mt-1 block"></small>
+                        {% if form.password2.errors %}
+                            <div class="text-red-400 text-xs mt-1">
+                                {% for error in form.password2.errors %}
+                                <div><i class="fas fa-exclamation-circle mr-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Términos y Condiciones -->
+                    <div class="flex items-center mb-6">
+                        <input type="checkbox" id="acceptTerms" required class="h-4 w-4 text-violet-600 bg-slate-700 border-slate-600 rounded focus:ring-violet-500">
+                        <label for="acceptTerms" class="ml-2 block text-sm text-slate-400">
+                            Acepto los <a href="#" class="text-violet-400 hover:text-violet-300 transition duration-150 font-medium">términos y condiciones</a>.
+                        </label>
+                    </div>
+
+                    
+                    <button type="submit" id="submitBtn" class="w-full py-3 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-lg shadow-lg shadow-violet-800/40 transition duration-200 transform hover:scale-[1.01] flex items-center justify-center">
+                        <i class="fas fa-user-plus mr-2"></i> Registrarme
+                    </button>
+                    
+                    <!-- Enlace a Login -->
+                    <div class="text-center mt-6 pt-4 border-t border-slate-700/50">
+                        <p class="mb-3 text-slate-400 text-sm">¿Ya tienes una cuenta?</p>
+                        <a href="{% url 'accounts:login' %}" class="w-full inline-flex items-center justify-center px-4 py-2 border-2 border-violet-600 text-violet-400 hover:bg-violet-900/30 font-semibold rounded-lg transition duration-200">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Iniciar Sesión
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+/* Estilo complementario para asegurar la altura si no se está usando un contenedor base que lo defina */
+.min-h-screen-minus-header {
+    min-height: calc(100vh - 60px); /* Ajusta si tu header tiene otra altura */
+}
+/* Estilos para el indicador de fortaleza (Clases personalizadas para Tailwind) */
+.strength-weak { background-color: #f87171; } /* red-400 */
+.strength-medium { background-color: #fbbf24; } /* amber-400 */
+.strength-strong { background-color: #34d399; } /* emerald-400 */
+.strength-very-strong { background-color: #a78bfa; } /* violet-400 */
+
+.text-weak { color: #f87171; }
+.text-medium { color: #fbbf24; }
+.text-strong { color: #34d399; }
+.text-very-strong { color: #a78bfa; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Referencias a elementos
+    // Nota: El ID 'id_password1' se mantiene porque se fuerza en el template y se usa en el JS.
+    const password1Input = document.getElementById('id_password1'); 
+    const password2Input = document.getElementById('id_password2'); 
+    const togglePassword1 = document.getElementById('togglePassword1');
+    const togglePassword2 = document.getElementById('togglePassword2');
+    const eyeIcon1 = document.getElementById('eyeIcon1');
+    const eyeIcon2 = document.getElementById('eyeIcon2');
+    const passwordStrength = document.getElementById('passwordStrength');
+    const passwordHelp = document.getElementById('passwordHelp');
+    const passwordMatch = document.getElementById('passwordMatch');
+    const form = document.getElementById('registrationForm');
+    const acceptTerms = document.getElementById('acceptTerms');
+    const submitBtn = document.getElementById('submitBtn');
+
+
+    // Función para alternar la visibilidad de la contraseña
+    function setupPasswordToggle(toggleBtn, fieldInput, icon) {
+        if (toggleBtn && fieldInput) {
+            toggleBtn.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                const type = fieldInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                fieldInput.setAttribute('type', type);
+
+                icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+            });
+        }
+    }
+    setupPasswordToggle(togglePassword1, password1Input, eyeIcon1);
+    setupPasswordToggle(togglePassword2, password2Input, eyeIcon2);
+
+
+    // 2. Comprobador de fortaleza de contraseña
+    function calculatePasswordStrength(password) {
+        let score = 0;
+        let message = 'Muy débil';
+        let strengthClass = 'strength-weak';
+        let textClass = 'text-weak';
+        
+        // Criterios de puntuación
+        if (password.length >= 8) score += 25;
+        if (password.match(/[a-z]/) && password.match(/[A-Z]/)) score += 25;
+        if (password.match(/[0-9]/)) score += 25;
+        if (password.match(/[^a-zA-Z0-9\s]/)) score += 25; // Caracter especial
+
+        if (score > 90) {
+            message = '¡Excelente!';
+            strengthClass = 'strength-very-strong';
+            textClass = 'text-very-strong';
+        } else if (score >= 75) {
+            message = 'Fuerte';
+            strengthClass = 'strength-strong';
+            textClass = 'text-strong';
+        } else if (score >= 50) {
+            message = 'Moderada';
+            strengthClass = 'strength-medium';
+            textClass = 'text-medium';
+        } else {
+            message = 'Muy débil';
+            strengthClass = 'strength-weak';
+            textClass = 'text-weak';
+        }
+
+        return {
+            percentage: Math.min(100, score),
+            message: message,
+            class: strengthClass,
+            textClass: textClass
+        };
+    }
+    
+    // Función para revisar la coincidencia de contraseñas
+    function checkPasswordMatch() {
+        if (!password1Input || !password2Input || !passwordMatch) return;
+
+        const pass1 = password1Input.value;
+        const pass2 = password2Input.value;
+        
+        // Limpiar estilos y contenido anteriores
+        passwordMatch.className = 'text-xs mt-1 block';
+
+        if (pass2.length > 0) {
+            if (pass1 === pass2) {
+                passwordMatch.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Las contraseñas coinciden.';
+                passwordMatch.classList.add('text-emerald-400'); // Tailwind: green-400
+            } else {
+                passwordMatch.innerHTML = '<i class="fas fa-times-circle mr-1"></i> Las contraseñas no coinciden.';
+                passwordMatch.classList.add('text-red-400'); // Tailwind: red-400
+            }
+        } else {
+            passwordMatch.innerHTML = '';
+        }
+    }
+
+
+    if (password1Input && passwordStrength && passwordHelp) {
+        password1Input.addEventListener('input', function() {
+            const password = this.value;
+            const strength = calculatePasswordStrength(password);
+            
+            passwordStrength.style.width = strength.percentage + '%';
+            
+            // Eliminar clases anteriores y agregar la nueva
+            ['strength-weak', 'strength-medium', 'strength-strong', 'strength-very-strong'].forEach(cls => {
+                passwordStrength.classList.remove(cls);
+                passwordHelp.classList.remove(`text-${cls.replace('strength-', '')}`);
+            });
+
+            passwordStrength.classList.add(strength.class);
+            passwordHelp.classList.add(strength.textClass);
+            passwordHelp.textContent = strength.message;
+            
+            // Es crucial llamar a checkPasswordMatch aquí para que se actualice al escribir la primera
+            checkPasswordMatch();
+        });
+    }
+
+    if (password2Input) {
+        password2Input.addEventListener('input', checkPasswordMatch);
+    }
+    
+    // 3. Manejo de envío del formulario (Términos y Condiciones)
+    if (form && submitBtn) {
+        form.addEventListener('submit', function(e) {
+            // Eliminar mensaje de error anterior
+            const existingError = form.querySelector('.terms-error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Verificar aceptación de términos
+            if (acceptTerms && !acceptTerms.checked) {
+                e.preventDefault();
+                
+                // Mostrar un error visible en el DOM (misma estética)
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'p-3 mb-4 rounded-lg bg-red-900 text-red-200 border border-red-700 terms-error-message';
+                errorDiv.innerHTML = '<div><i class="fas fa-exclamation-triangle mr-2"></i> Debes aceptar los términos y condiciones.</div>';
+                
+                // Insertar el error justo antes del botón de submit
+                submitBtn.parentNode.insertBefore(errorDiv, submitBtn);
+            }
+        });
+    }
+
+    // 4. Auto-focus primer campo
+    const usernameField = document.getElementById('{{ form.username.id_for_label }}');
+    if (usernameField) {
+        usernameField.focus();
+    }
+
+});
+</script>
+
+{% endblock %}

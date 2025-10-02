@@ -10,8 +10,6 @@ import requests
 API_URL_PRODUCTS = "https://api.escuelajs.co/api/v1/products"
 API_URL_CATEGORIES = "https://api.escuelajs.co/api/v1/categories"
 
-
-# 📌 Listar productos
 # 📌 Listar productos
 def product_list(request):
     try:
@@ -31,7 +29,7 @@ def product_list(request):
 
     return render(
         request,
-        "product_list.html",
+        "products/product_list.html",
         {"products": products, "categories": categories},
     )
 
@@ -90,7 +88,7 @@ def product_create(request):
     else:
         form = ProductForm(categories=categories)
 
-    return render(request, 'products/product_create.html', {
+    return render(request, 'products:product_create.html', {
         'form': form
     })
 
@@ -103,7 +101,7 @@ def product_detail(request, product_id):
     except requests.exceptions.RequestException:
         return HttpResponse("❌ Error al obtener el producto", status=500)
 
-    return render(request, "product_detail.html", {"product": product})
+    return render(request, "products/product_detail.html", {"product": product})
 
 # 📌 Editar producto
 def edit_product(request, product_id):
@@ -129,28 +127,28 @@ def edit_product(request, product_id):
             "price": int(request.POST.get("price", 0)),
             "description": request.POST.get("description"),
             "categoryId": int(request.POST.get("categoryId", 0)),
-            "images": [request.POST.get("image")],
+            "images": [request.POST.get("image") or product.get("images", [""])[0]],
         }
         try:
             response = requests.put(f"{API_URL_PRODUCTS}/{product_id}", json=data)
             if response.status_code in [200, 201]:
-                return redirect("product_detail", product_id=product_id)
+                # 💡 CORRECCIÓN APLICADA AQUÍ: Se agregó 'products:' al nombre de la URL.
+                return redirect("products:product_detail", product_id=product_id)
             return HttpResponse("❌ Error al actualizar producto", status=response.status_code)
         except requests.exceptions.RequestException:
             return HttpResponse("❌ No se pudo conectar con la API", status=500)
 
     return render(
         request,
-        "edit_product.html",
+        "products/edit_product.html",
         {"product": product, "categories": categories},
     )
-
 # 📌 Eliminar producto
 def delete_product(request, product_id):
     try:
         response = requests.delete(f"{API_URL_PRODUCTS}/{product_id}")
         if response.status_code == 200:
-            return redirect("product_list")
+            return redirect("products:product_list")
         return HttpResponse("❌ Error al eliminar producto", status=response.status_code)
     except requests.exceptions.RequestException:
         return HttpResponse("❌ No se pudo conectar con la API", status=500)
